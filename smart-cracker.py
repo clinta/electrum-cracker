@@ -39,18 +39,18 @@ i = 0
 total = 479001600
 print total
 start = datetime.now()
-for subset in itertools.permutations(words.split()):
-  i+=1
-  seed = " ".join(subset)
-  if i % 2000 == 0:
-    elapsed = datetime.now() - start
-    rate = i / elapsed.seconds
-    remaining = total - i
-    finish = datetime.now() + timedelta(seconds=remaining/rate)
-    print i,"/",total,"  ",float(i/total),"%  finish: ",finish
+
+i = 0
+while i < 11:
+  arr = words.split()
+  arr[i], arr[i+1] = arr[i+1], arr[i]
+  seed = " ".join(arr)
+  print seed
   if bitcoin.is_new_seed(seed):
+    print(xprv_from_seed(seed))
     #print xpub_from_seed(seed)
     if str(xpub_from_seed(seed)) == str(pub):
       print(seed)
       print(xprv_from_seed(seed))
       break
+  i+=1
