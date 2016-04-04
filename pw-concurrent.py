@@ -32,23 +32,23 @@ def grouper(iterable, n, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+    return itertools.izip_longest(*args, fillvalue=fillvalue)
+
+def try_item(item):
+  p = "".join(item)
+  #print p
+  try:
+    bitcoin.pw_decode(p, i)
+    print p
+    print "success"
+  except:
+    pass
 
 def try_group(pws):
   for i in pws:
-    p = "".join(i)
-    print p
-    try:
-      bitcoin.pw_decode(p, i)
-      print "success"
-      break
-    except:
-      pass
+    try_item(i)
 
-executor = concurrent.futures.ProcessPoolExecutor(6)
-futures = [executor.submit(try_group, group)
-           for group in grouper(itertools.product(*pw))]
-
-concurrent.futures.wait(futures)
+with concurrent.futures.ThreadPoolExecutor() as executor:
+     executor.map(try_item, itertools.product(*pw))
 
 print "done"
